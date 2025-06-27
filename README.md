@@ -1,0 +1,2 @@
+# stealer
+a simple stealer
